@@ -8,7 +8,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:8000",
-    "https://birr.netlify.app/"
+    "https://birr.netlify.app"
 ]
 
 app.add_middleware(CORSMiddleware, allow_origins=origins,allow_methods=["*"], allow_headers=["*"])
