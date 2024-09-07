@@ -1,3 +1,4 @@
+import datetime
 from typing import Union
 
 from fastapi import FastAPI
@@ -24,3 +25,25 @@ def read_root():
     obj = {'date': date, 'buying': buying, 'selling': selling}
 
     return obj
+@app.get("/cbe")
+def cbe():
+    date = datetime.date.today()
+    lst = []
+    while (True):
+
+        res = requests.get("https://www.combanketh.et/cbeapi/daily-exchange-rates/?_limit=1&Date=" + str(date))
+        obj = res.json()
+
+        if len(obj) > 0:
+            buying = obj[0]["ExchangeRate"][0]["cashBuying"]
+            selling = obj[0]["ExchangeRate"][0]["cashSelling"]
+            currency = obj[0]["ExchangeRate"][0]["currency"]["CurrencyCode"]
+            temp = {"buying": buying, "selling": selling, "currency": currency}
+
+            lst.append(temp)
+        date = date - datetime.timedelta(days=1)
+        if len(lst) == 0:
+            continue
+        else:
+            break
+    return lst
