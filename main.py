@@ -31,7 +31,7 @@ def cbe():
     lst = []
     while (True):
 
-        res = requests.get("https://www.combanketh.et/cbeapi/daily-exchange-rates/?_limit=1&Date=" + str(date))
+        res = requests.get("https://combanketh.et/cbeapi/daily-exchange-rates/?_limit=1&Date=" + str(date))
         obj = res.json()
 
         if len(obj) > 0:
