@@ -12,7 +12,7 @@ origins = [
     "https://birr.netlify.app"
 ]
 
-app.add_middleware(CORSMiddleware, allow_origins=origins,allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"],allow_methods=["*"], allow_headers=["*"])
 
 
 @app.get("/")
