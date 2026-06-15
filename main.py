@@ -52,7 +52,7 @@ def boa_history():
             "buying": record["buying"],
             "selling": record["selling"]
         }
-    usd_data.append(temp)
+        usd_data.append(temp)
     page = requests.get("https://www.bankofabyssinia.com/exchange-rate-2/")
     soup = BeautifulSoup(page.text, "html.parser")
     date = soup.css.select_one(".middle_content .row-1 .column-1").string
