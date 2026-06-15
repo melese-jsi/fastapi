@@ -30,7 +30,7 @@ origins = [
 ]
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"],allow_methods=["*"], allow_headers=["*"])
-@app.get("/boa_history")
+@app.get("/boa")
 def boa_history():
     print("boa called")
 
@@ -59,7 +59,8 @@ def boa_history():
     buying = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-2").string
     selling = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-3").string
     obj = {'title':  (datetime.strptime(date, "%B %d, %Y")).strftime("%Y-%m-%d"), 'buying': buying, 'selling': selling}
-    usd_data.append(obj)
+    if not any(item["title"] == obj["title"] for item in usd_data):
+       usd_data.append(obj)
 
 
     usd_data.sort(
