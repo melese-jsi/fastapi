@@ -30,7 +30,52 @@ origins = [
 ]
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"],allow_methods=["*"], allow_headers=["*"])
+@app.get("/boa_history")
+def boa_history():
+    print("boa called")
 
+
+
+    # Read data2.json
+    with open("data2.json", "r", encoding="utf-8") as f:
+        pastmonth = json.load(f)
+
+
+
+    records = pastmonth["records"]
+
+    usd_data = []
+
+    for record in records:
+        temp = {
+            "title": record["title"],
+            "buying": record["buying"],
+            "selling": record["selling"]
+        }
+        usd_data.append(temp)
+    page = requests.get("https://www.bankofabyssinia.com/exchange-rate-2/")
+    soup = BeautifulSoup(page.text, "html.parser")
+    date = soup.css.select_one(".middle_content .row-1 .column-1").string
+    buying = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-2").string
+    selling = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-3").string
+    obj = {'title':  (datetime.strptime(date, "%B %d, %Y")).strftime("%Y-%m-%d"), 'buying': buying, 'selling': selling}
+    usd_data.append(obj)
+
+
+    usd_data.sort(
+        key=lambda x: datetime.strptime(x["title"], "%Y-%m-%d"),
+        reverse=True
+    )
+    with open("data2.json", "w", encoding="utf-8") as f:
+        json.dump(
+            usd_data,
+            f,
+            indent=2,
+            ensure_ascii=False
+        )
+
+
+    return usd_data
 
 @app.get("/")
 def read_root():
