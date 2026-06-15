@@ -42,11 +42,11 @@ def boa_history():
 
 
 
-    records = pastmonth["records"]
+    
 
     usd_data = []
 
-    for record in records:
+    for record in pastmonth:
         temp = {
             "title": record["title"],
             "buying": record["buying"],
