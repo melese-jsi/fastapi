@@ -12,19 +12,8 @@ playwright = None
 browser = None
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    global playwright, browser
 
-    playwright = await async_playwright().start()
-    browser = await playwright.chromium.launch(headless=True)
-
-    yield
-
-    await browser.close()
-    await playwright.stop()
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 origins = [
     "http://localhost:8000",
