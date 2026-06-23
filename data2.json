@@ -1,5 +1,53 @@
 [
-
+ {
+    "title": "2026-06-22",
+    "buying": 157.8303,
+    "selling": 160.9869,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+   {
+    "title": "2026-06-20",
+    "buying": 157.3303,
+    "selling": 160.4769,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+   {
+    "title": "2026-06-19",
+    "buying": 157.2045,
+    "selling": 160.3486,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+   {
+    "title": "2026-06-18",
+    "buying": 157.0802,
+    "selling": 160.2218,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+    {
+    "title": "2026-06-17",
+    "buying": 157.0302,
+    "selling": 160.1708,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+   {
+    "title": "2026-06-16",
+    "buying": 156.8726,
+    "selling": 160.0101,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+{
+    "title": "2026-06-15",
+    "buying": 156.2637,
+    "selling": 159.3890,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
 
    {
     "title": "2026-06-13",
