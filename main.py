@@ -58,6 +58,7 @@ def boa_history():
         key=lambda x: datetime.strptime(x["title"], "%Y-%m-%d"),
         reverse=True
     )
+  try:
     with open("data2.json", "w", encoding="utf-8") as f:
         json.dump(
             usd_data,
@@ -65,7 +66,9 @@ def boa_history():
             indent=2,
             ensure_ascii=False
         )
-
+    print("File written successfully")
+   except Exception as e:
+    print("Error:", e)
 
     return usd_data
 
