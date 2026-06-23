@@ -1,4 +1,3 @@
-
 from typing import Union
 
 from fastapi import FastAPI
@@ -11,8 +10,6 @@ import json
 playwright = None
 browser = None
 
-
-
 app = FastAPI()
 
 origins = [
@@ -20,20 +17,16 @@ origins = [
     "https://birr.netlify.app"
 ]
 
-app.add_middleware(CORSMiddleware, allow_origins=["*"],allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+
 @app.get("/boa")
 def boa_history():
     print("boa called")
 
-
-
     # Read data2.json
     with open("data2.json", "r", encoding="utf-8") as f:
         pastmonth = json.load(f)
-
-
-
-    
 
     usd_data = []
 
@@ -49,28 +42,30 @@ def boa_history():
     date = soup.css.select_one(".middle_content .row-1 .column-1").string
     buying = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-2").string
     selling = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-3").string
-    obj = {'title':  (datetime.strptime(date, "%B %d, %Y")).strftime("%Y-%m-%d"), 'buying': buying, 'selling': selling}
+    obj = {'title': (datetime.strptime(date, "%B %d, %Y")).strftime("%Y-%m-%d"), 'buying': buying, 'selling': selling}
     if not any(item["title"] == obj["title"] for item in usd_data):
-       usd_data.append(obj)
-
+        usd_data.append(obj)
 
     usd_data.sort(
         key=lambda x: datetime.strptime(x["title"], "%Y-%m-%d"),
         reverse=True
     )
-  try:
-    with open("data2.json", "w", encoding="utf-8") as f:
+
+
+    try:
+     with open("data2.json", "w", encoding="utf-8") as f:
         json.dump(
             usd_data,
             f,
             indent=2,
             ensure_ascii=False
         )
-    print("File written successfully")
-   except Exception as e:
-    print("Error:", e)
+        print("File written successfully")
+    except Exception as e:
+     print("Error:", e)
 
     return usd_data
+
 
 @app.get("/")
 def read_root():
@@ -82,6 +77,8 @@ def read_root():
     obj = {'date': date, 'buying': buying, 'selling': selling}
 
     return obj
+
+
 @app.get("/cbe")
 def cbe():
     date = datetime.date.today()
@@ -104,6 +101,3 @@ def cbe():
         else:
             break
     return lst
-
-
-
