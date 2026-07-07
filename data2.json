@@ -1,4 +1,39 @@
 [
+    {
+    "title": "2026-07-07",
+    "buying": 159.1336,
+    "selling": 162.3163,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+    {
+    "title": "2026-07-06",
+    "buying": 159.1076,
+    "selling": 162.2898,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+    {
+    "title": "2026-07-04",
+    "buying": 159.0652,
+    "selling": 162.2465,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+    {
+    "title": "2026-07-03",
+    "buying": 159.0602,
+    "selling": 162.2414,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
+    {
+    "title": "2026-07-02",
+    "buying": 159.0033,
+    "selling": 162.1834,
+    "transaction_buying": 155.6114,
+    "transaction_selling": 158.7236
+  },
   {
     "title": "2026-07-01",
     "buying": 158.9533,
