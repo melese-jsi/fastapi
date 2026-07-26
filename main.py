@@ -143,9 +143,9 @@ def get_exchange_rates():
 
             rates = [
                 {
-                    "date": row.date.isoformat(),
-                    "buying_rate": float(row.buying_rate),
-                    "selling_rate": float(row.selling_rate)
+                    "title": row.date.isoformat(),
+                    "buying": float(row.buying_rate),
+                    "selling": float(row.selling_rate)
                 }
                 for row in result
             ]
