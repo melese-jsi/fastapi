@@ -3,12 +3,23 @@ from typing import Union
 from fastapi import FastAPI
 from bs4 import BeautifulSoup
 import requests
-from fastapi.middleware.cors import CORSMiddleware
+
 from datetime import datetime, date, timedelta
 import json
 
+from fastapi import FastAPI, HTTPException
+from sqlalchemy import create_engine, text
+import psycopg2
+from sqlalchemy.exc import SQLAlchemyError
+from fastapi.middleware.cors import CORSMiddleware
+import os
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 playwright = None
 browser = None
+
+scheduler = AsyncIOScheduler()
 
 app = FastAPI()
 
@@ -18,6 +29,137 @@ origins = [
 ]
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# Neon PostgreSQL connection string
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://neondb_owner:npg_9DXN6lVUKZeO@ep-holy-pond-ahosip88.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require"
+)
+
+# Create connection pool
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_size=5,
+    max_overflow=10
+)
+
+
+
+def getExchangeRate():
+
+    page = requests.get("https://www.bankofabyssinia.com/exchange-rate-2/")
+    soup = BeautifulSoup(page.text, "html.parser")
+    date = soup.css.select_one(".middle_content .row-1 .column-1").string
+    buying = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-2").string
+    selling = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-3").string
+    obj = {'title': (datetime.strptime(date, "%B %d, %Y")).strftime("%Y-%m-%d"), 'buying': buying, 'selling': selling}
+    insert_exchange_rate(date,buying,selling)
+    #return obj
+def insert_exchange_rate(rate_date, buying_rate, selling_rate):
+    sql = """
+               INSERT INTO boa_rates (
+                   date,
+                   buying_rate,
+                   selling_rate
+               )
+               VALUES (
+                   %s, %s, %s
+               )
+               ON CONFLICT (date)
+               DO UPDATE SET
+                   buying_rate = EXCLUDED.buying_rate,
+                   selling_rate = EXCLUDED.selling_rate;
+           """
+    try:
+
+        with psycopg2.connect(DATABASE_URL) as conn:
+
+            with conn.cursor() as cur:
+                cur.execute(
+                    sql,
+                    (
+                        rate_date,
+
+                        buying_rate,
+                        selling_rate
+
+                    )
+                )
+
+            conn.commit()
+
+        print("Exchange rate saved successfully.")
+
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Database error: {str(e)}"
+        )
+
+
+@app.on_event("startup")
+async def startup_event():
+
+    # Run once when FastAPI starts
+    getExchangeRate()
+
+    # Run every day at 11:00 AM and 2.00pm
+    scheduler.add_job(
+        getExchangeRate,
+        "cron",
+        hour='11,15',
+        minute=25
+    )
+
+    scheduler.start()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+
+    scheduler.shutdown()
+
+
+
+@app.get("/boa-rates")
+def get_exchange_rates():
+    """
+    Returns all records from the exchange_rates table.
+    """
+
+    try:
+        with engine.connect() as connection:
+            result = connection.execute(
+                text("""
+                    SELECT
+                        date,
+                        buying_rate,
+                        selling_rate
+                    FROM boa_rates
+                    ORDER BY date DESC
+                """)
+            )
+
+            rates = [
+                {
+                    "date": row.date.isoformat(),
+                    "buying_rate": float(row.buying_rate),
+                    "selling_rate": float(row.selling_rate)
+                }
+                for row in result
+            ]
+
+            return {
+                "count": len(rates),
+                "data": rates
+            }
+
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Database error: {str(e)}"
+        )
 
 
 @app.get("/boa")
