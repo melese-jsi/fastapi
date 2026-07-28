@@ -48,7 +48,7 @@ engine = create_engine(
 
 def getExchangeRate():
 
-    page = requests.get("https://www.bankofabyssinia.com/exchange-rate-2/")
+    page = requests.get("https://www.bankofabyssinia.com/exchange-rate-2/", verify=False)
     soup = BeautifulSoup(page.text, "html.parser")
     date = soup.css.select_one(".middle_content .row-1 .column-1").string
     buying = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-2").string
@@ -211,7 +211,7 @@ def boa_history():
 
 @app.get("/")
 def read_root():
-    page = requests.get("https://www.bankofabyssinia.com/exchange-rate-2/")
+    page = requests.get("https://www.bankofabyssinia.com/exchange-rate-2/",verify=False)
     soup = BeautifulSoup(page.text, "html.parser")
     date = soup.css.select_one(".middle_content .row-1 .column-1").string
     buying = soup.css.select_one(".middle_content #tablepress-15 .row-hover .row-4 .column-2").string
